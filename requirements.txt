@@ -1,0 +1,4 @@
+solana==0.23.2
+discord==1.7.3
+discord-webhook==0.16.3
+discordwebhook==1.0.3
