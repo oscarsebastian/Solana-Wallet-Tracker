@@ -11,8 +11,9 @@ WALLETS_TO_MONITOR=pd.read_csv('wallets.csv')
 
 """ Monitor Solana Adress """
 
+def monitor_address(address:str,
+                    delay:int):
 
-def monitor_address(address,delay):
     endpoint = 'https://api.mainnet-beta.solana.com'
     solana_client = Client(endpoint)
     while True:
@@ -25,19 +26,20 @@ def monitor_address(address,delay):
                     print(f"Tx found with signature : {last_signature}")
                     if not checked_transactions(last_signature):
                         transaction_json=tx_info(last_signature)
-                        check_signature_json(last_signature,transaction_json,address) 
+                        check_signature_json(last_signature,
+                                            transaction_json,
+                                            address) 
                     else:
                         print(f"No new TXs found for wallet : {address}")
-            
-            time.sleep(delay)
-            
+            time.sleep(delay) 
         except Exception as e:
             print(f"Exception [{e}] found.")
             
 
 """ Function which checks if last wallet tx has already been analyzed."""
 
-def checked_transactions(last_signature):
+def checked_transactions(last_signature:str):
+
     with open('checked_txs.csv', 'r') as fp:
                 checked_txs = fp.read()
     if last_signature not in checked_txs:
@@ -51,7 +53,8 @@ def checked_transactions(last_signature):
 
 """ Function used to detect price """
 
-def detect_price(log):
+def detect_price(log:str):
+
     lamport_scale= 0.000000001
     if log:
         nft_sell_info=json.loads(log.split('log:')[1].strip())
@@ -63,7 +66,8 @@ def detect_price(log):
 
 """ Parsed last transaction"""
 
-def tx_info(signature):
+def tx_info(signature:str):
+
     print(f"Fetching info for tx : {[signature]}")
     json_data = {
     'jsonrpc': '2.0',
@@ -77,7 +81,7 @@ def tx_info(signature):
     parsed_results=0
     while parsed_results<=0:
         try:
-            r = requests.post(rpc, json=json_data,timeout=3)
+            r = requests.post(rpc,json=json_data,timeout=3)
             parsed=json.loads(r.text)
             parsed_results=len(parsed['result'])
             return parsed
@@ -87,10 +91,10 @@ def tx_info(signature):
             print ("Error Connecting:",errc.args)
             
     
-
 """ Get NFT information."""
 
-def get_atts(mint_id):
+def get_atts(mint_id:str):
+
     client = Client("http://api.mainnet-beta.solana.com")
     data = metadata.get_metadata(client, mint_id)['data']
     if 'name' in data.keys():
@@ -109,17 +113,18 @@ def get_atts(mint_id):
 
 """ Function to check TX Type"""
 
-def check_signature_json(nft_signature,transaction_json,public_wallet):
-    secondary_play,count_mint,is_listing,nft_price,minted_nft=False,0,False,None,False
+def check_signature_json(nft_signature:str,
+                        transaction_json:dict,
+                        public_wallet:str):
+
+    count_mint,nft_price=0,None
     if not transaction_json['result']['meta']['err']:
         count=0
         list_count=0
-
         nft_ownership_data=transaction_json['result']['meta']['postTokenBalances']
         nft_token_adress=nft_ownership_data[len(nft_ownership_data)-1]['mint']
         nft_owner=nft_ownership_data[len(nft_ownership_data)-1]['owner'] 
         nft_name,nft_image,nft_royalties=get_atts(nft_token_adress)
-
         for log in transaction_json['result']['meta']['logMessages']:
             if any(word in log.lower() for word in ['deposit','buy','executesale']):
                 count+=1
@@ -133,10 +138,8 @@ def check_signature_json(nft_signature,transaction_json,public_wallet):
                     mode='List'
                 elif list_count==2:
                     mode='Delist'
-       
         if count_mint > 1: 
-            mode='mint'
-          
+            mode='mint'    
         if count > 1:
                 if nft_owner == public_wallet:
                     mode='Buy'
@@ -144,16 +147,15 @@ def check_signature_json(nft_signature,transaction_json,public_wallet):
                 else:
                     mode='Sale'
                     print(f'Secondary Sale operation Detected! with cost {nft_price} SOL.')
-
-
         print(f"{mode} operation detected.")            
         send_hook(public_wallet,nft_signature,nft_price,nft_name,nft_image,nft_royalties,mode)
 
 
-
 """Function to add wallets to csv"""
 
-def check_wallet(wallet,user):
+def check_wallet(wallet:str,
+                 user:str):
+
     with open('wallets.csv', 'r') as fp:
         wallets = fp.read()
     if wallet not in wallets:
