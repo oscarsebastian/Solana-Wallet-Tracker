@@ -8,13 +8,13 @@ This version is fully on chain , it uses Solana's RPC also known as validators t
 
 In order to be able to run this code you must follow some steps!
 
-*1) Install the requirements.txt with pip install -r requirements.txt 
-*2) Must also install !npx degit metaplex-foundation/python-api/metaplex metaplex
-*3) You must add the webhook url where you will get pinged into config.csv under wallet_tracker_webhook_url
-*4) You must add the webhook url where you will get notified after adding a wallet to the discord bot via command in a specific channel into config.csv under wallet_adding_bot_url
-*5) It is important to change (message.channel.id : integer)  in main.py to the desired channel which you will use to add wallets with the command 
+*Install the requirements.txt with pip install -r requirements.txt 
+*Must also install !npx degit metaplex-foundation/python-api/metaplex metaplex
+*You must add the webhook url where you will get pinged into config.csv under wallet_tracker_webhook_url
+*You must add the webhook url where you will get notified after adding a wallet to the discord bot via command in a specific channel into config.csv under wallet_adding_bot_url
+*It is important to change (message.channel.id : integer)  in main.py to the desired channel which you will use to add wallets with the command 
 public_key : username 
-*6) Finally you must add your discord bot token in the field bot.run (Last line of code : string)
+*Finally you must add your discord bot token in the field bot.run (Last line of code : string)
 
 ## How does it work?
 
