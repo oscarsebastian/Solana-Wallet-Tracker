@@ -74,7 +74,7 @@ def tx_info(signature:str):
     parsed_results=0
     while parsed_results<=0:
         try:
-            parsed=solana.get_transaction(signature)
+            parsed=solana_client.get_transaction(signature)
             parsed_results=len(parsed['result'])
             return parsed
         except requests.exceptions.Timeout as errt:
