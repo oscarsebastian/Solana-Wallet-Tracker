@@ -69,20 +69,12 @@ def detect_price(log:str):
 def tx_info(signature:str):
 
     print(f"Fetching info for tx : {[signature]}")
-    json_data = {
-    'jsonrpc': '2.0',
-    'id': 1,
-    'method': 'getTransaction',
-    'params': [
-        f'{signature}',
-        'json',
-    ]}
-    rpc='https://api.mainnet-beta.solana.com'
+    rpc = 'https://api.mainnet-beta.solana.com'
+    solana_client = Client(rpc)
     parsed_results=0
     while parsed_results<=0:
         try:
-            r = requests.post(rpc,json=json_data,timeout=3)
-            parsed=json.loads(r.text)
+            parsed=solana.get_transaction(signature)
             parsed_results=len(parsed['result'])
             return parsed
         except requests.exceptions.Timeout as errt:
