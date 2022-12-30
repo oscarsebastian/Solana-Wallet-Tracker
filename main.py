@@ -178,7 +178,6 @@ async def on_ready():
 async def on_message(message):
   if message.channel.id == CHANNEL_ID_HERE_INT:
     msg = message.content
-    print(msg)
     try:
         msg=msg.split(':')
         wallet=msg[0].strip()
